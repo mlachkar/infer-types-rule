@@ -1,19 +1,10 @@
 lazy val V = _root_.scalafix.sbt.BuildInfo
 inThisBuild(
   List(
-    scalaVersion := V.scala212,
-    crossScalaVersions := List(V.scala213, V.scala212, V.scala211),
+    scalaVersion := V.scala213,
     organization := "com.example",
     homepage := Some(url("https://github.com/com/example")),
     licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-    developers := List(
-      Developer(
-        "example-username",
-        "Example Full Name",
-        "example@email.com",
-        url("https://example.com")
-      )
-    ),
     addCompilerPlugin(scalafixSemanticdb),
     scalacOptions ++= List(
       "-Yrangepos",
@@ -26,15 +17,26 @@ skip in publish := true
 
 lazy val rules = project.settings(
   moduleName := "scalafix",
-  libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion
+  libraryDependencies ++= Seq(
+    "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+    "ch.epfl.scala" %% "scalafix-rules" % V.scalafixVersion,
+  )
 )
 
 lazy val input = project.settings(
-  skip in publish := true
+  skip in publish := true,
+  libraryDependencies ++= Seq(
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+    "com.twitter" %% "bijection-core" % "0.9.7"
+  )
 )
 
 lazy val output = project.settings(
-  skip in publish := true
+  skip in publish := true,
+  libraryDependencies ++= Seq(
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+    "com.twitter" %% "bijection-core" % "0.9.7"
+  )
 )
 
 lazy val tests = project
